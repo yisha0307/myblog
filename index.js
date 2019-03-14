@@ -47,6 +47,7 @@ app.locals.blog = {
     description: pkg.description
 }
 // 添加模板必须的三个变量 -- res.locals
+// ejs里可以直接使用
 app.use(function (req, res, next) {
     res.locals.user = req.session.user
     res.locals.success = req.flash('success').toString()

@@ -8,6 +8,10 @@ const checkLogin = require('../middlewares/check').checkLogin
 router.get('/', (req, res, next) => {
     res.render('posts')
 })
+// 发表文章页
+router.get('/create', (req, res, next) => {
+    res.render('create')
+})
 // POST /posts/create 发表一篇文章
 router.post('/create', (req, res, next) => {
     res.send('发表文章')
