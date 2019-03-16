@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const checkLogin = require('../middlewares/check').checkLogin
-const PostModel = require('../models/posts')
+const PostModel = require('../models/post')
 
 // GET /posts 所有用户或者特定用户的文章页
 // eg: /posts?author=xxx
@@ -36,12 +36,16 @@ router.post('/create', checkLogin, (req, res, next) => {
         title,
         content
     }
-    PostModel.create(post).then(function (result) {
-        // 此post 是插入mongodb的值，包含_id
-        post = result.ops[0]
-        req.flash('success', '发表成功')
-        res.redirect(`/posts/${post._id}`)
-    }).catch(next)
+    PostModel.add(post, function(err, doc) {
+        if (err) {
+            console.log(err)
+            next(err)
+        } else {
+            let post = doc
+            req.flash('success', '发表成功')
+            res.redirect(`/posts/${post._id}`)
+        }
+    })
 })
 // GET /posts/:postId 单独一篇文章页
 router.get('/:postId', function (req, res, next) {
