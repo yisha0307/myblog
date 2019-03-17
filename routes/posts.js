@@ -36,15 +36,13 @@ router.post('/create', checkLogin, (req, res, next) => {
         title,
         content
     }
-    PostModel.add(post, function(err, doc) {
-        if (err) {
-            console.log(err)
-            next(err)
-        } else {
-            let post = doc
-            req.flash('success', '发表成功')
-            res.redirect(`/posts/${post._id}`)
-        }
+    // 发表文章 promise
+    PostModel.add(post).then(doc => {
+        let post = doc
+        req.flash('success', '发表成功')
+        res.redirect(`/posts/${post._id}`)
+    }).catch(err => {
+        next(err)
     })
 })
 // GET /posts/:postId 单独一篇文章页

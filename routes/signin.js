@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const sha1 = require('sha1')
 
-const UserModel = require('../models/users')
+const UserModel = require('../models/user')
 const checkNotLogin = require('../middlewares/check').checkNotLogin
 
 // GET /signin 登录页
@@ -27,7 +27,7 @@ router.post('/', checkNotLogin, (req, res, next) => {
         req.flash('error', e.message)
         return res.redirect('back')
     }
-    UserModel.getUserByName(name).then(user => {
+    UserModel.findUserByName(name).then(user => {
         if (!user) {
             req.flash('error', '用户不存在')
             return res.redirect('back')
@@ -44,7 +44,9 @@ router.post('/', checkNotLogin, (req, res, next) => {
         req.session.user = user
         // 跳转到主页
         res.redirect('/posts')
-    }).catch(next)
+    }).catch(e=>{
+        next(e)
+    })
 })
 
 module.exports = router

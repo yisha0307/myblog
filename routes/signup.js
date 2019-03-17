@@ -60,17 +60,8 @@ router.post('/', checkNotLogin, function (req, res, next) {
     avatar: avatar
   }
   // 用户信息写入数据库
-  UserModel.add(user, (err, doc)=> {
-      if (err) {
-        fs.unlinkSync(req.files.avatar.path)
-        // 用户名被占用则跳回注册页，而不是错误页
-        if (err.message.match('duplicate key')) {
-          req.flash('error', '用户名已被占用')
-          return res.redirect('/signup')
-        }
-        next(err)
-      } else {
-        let user = doc
+  UserModel.add(user).then(doc => {
+    let user = doc
         // 删除密码这种敏感信息，将用户信息存入 session
         delete user.password
         req.session.user = user
@@ -78,8 +69,15 @@ router.post('/', checkNotLogin, function (req, res, next) {
         req.flash('success', '注册成功')
         // 跳转到首页
         res.redirect('/posts')
-      }
-    })
+  }).catch(err=>{
+    fs.unlinkSync(req.files.avatar.path)
+    // 用户名被占用则跳回注册页，而不是错误页
+    if (err.message.match('duplicate key')) {
+      req.flash('error', '用户名已被占用')
+      return res.redirect('/signup')
+    }
+    next(err)
+  })
 })
 
 module.exports = router
