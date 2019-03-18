@@ -27,5 +27,18 @@ module.exports = {
                 }
             })
         })
+    },
+    getPosts: function (author) {
+        return new Promise((resolve, reject) => {
+            const query = {author}
+            User.find(query, (err, docs) => {
+                if (err) {
+                    console.log('error --> ',err)
+                    reject(err)
+                } else {
+                    resolve(docs)
+                }
+            })
+        })
     }
 }

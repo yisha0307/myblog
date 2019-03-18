@@ -18,5 +18,38 @@ module.exports = {
                 }
             })
         })
+    },
+    findPostById: function (_id) {
+        return new Promise ((resolve, reject) => {
+            Post.findOne({_id: _id}).populate('author').exec((err, doc) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve(doc)
+                }
+            })
+        })
+    },
+    findPosts: function (author) {
+        return new Promise ((resolve, reject) => {
+            const query = {}
+                if (author) {
+                query.author = author
+            }
+            Post.find(query).sort({_id: -1}).populate('author').exec((err, docs) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve(docs)
+                }
+            })
+        })
+    },
+    incPV: function incPV (_id) {
+        return new Promise(() => {
+            Post.updateOne({_id}, {$inc: {pv: 1}})
+        })
     }
 }

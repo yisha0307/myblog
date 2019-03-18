@@ -7,7 +7,13 @@ const PostModel = require('../models/post')
 // GET /posts 所有用户或者特定用户的文章页
 // eg: /posts?author=xxx
 router.get('/', (req, res, next) => {
-    res.render('posts')
+    const author = req.query.author
+
+    PostModel.findPosts(author)
+    .then(docs => {
+        res.render('posts', {posts: docs})
+    })
+    .catch(next)
 })
 // 发表文章页
 router.get('/create', (req, res, next) => {
@@ -47,14 +53,23 @@ router.post('/create', checkLogin, (req, res, next) => {
 })
 // GET /posts/:postId 单独一篇文章页
 router.get('/:postId', function (req, res, next) {
-    res.send('文章详情页')
+    const postId = req.params.postId
+    PostModel.findPostById(postId)
+        .then(post => {
+            if (!post) {
+                throw new Error('该文章不存在')
+            } else {
+                res.render('post', {post})
+                PostModel.incPV()
+            }
+        })
+        .catch(e=> {
+            req.flash('error', e.message)
+            return res.redirect('back')
+        })
 })
 // GET /posts/:postId/edit 更新文章页
 router.get('/:postId/edit', function (req, res, next) {
-    res.send('更新文章')
-})
-// POST /posts/:postId/edit 更新一篇文章
-router.post('/:postId/edit', checkLogin, function (req, res, next) {
     res.send('更新文章')
 })
 // GET /posts/:postId/remove 删除一篇文章
