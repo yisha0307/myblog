@@ -60,7 +60,8 @@ router.get('/:postId', function (req, res, next) {
                 throw new Error('该文章不存在')
             } else {
                 res.render('post', {post})
-                PostModel.incPV()
+                // 非promise
+                PostModel.incPV(postId)
             }
         })
         .catch(e=> {
@@ -103,25 +104,29 @@ router.post('/:postId/edit', checkLogin, function (req, res, next){
         return res.redirect('back')
     }
 
-    PostModel.getRawPostById(postId).then(function (post){
+    PostModel.updatePostById(postId, {title, content}).then(post => {
         if (!post) {
             throw new Error('文章不存在')
         }
         if (post.author._id.toString() !== author.toString()) {
             throw new Error('没有权限')
         }
-        PostModel.updatePostById(postId, {title: title, content: content}).then(() => {
-            req.flash('success', '编辑文章成功')
-            res.redirect(`/posts/${postId}`)
-        }).catch(next)
-    })
+        req.flash('success', '编辑文章成功')
+        res.redirect(`/posts/${postId}`)
+    }).catch(next)
 })
 // GET /posts/:postId/remove 删除一篇文章
 router.get('/:postId/remove', checkLogin, function (req, res, next) {
     const postId = req.params.postId
     const author = req.session.author._id
-    PostModel.deletePostById(postId).then(()=>{
-        // TODO需要校验
+
+    PostModel.deletePostById(postId).then(post =>{
+        if (!post) {
+            throw new Error('文章不存在')
+        }
+        if (author !== post.author._id.toString()) {
+            throw new Error('没有权限')
+        }
         req.flash('success', '删除文章成功')
         res.redirect('/posts')
     }).catch(next)

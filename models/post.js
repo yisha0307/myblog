@@ -48,10 +48,8 @@ module.exports = {
         })
     },
     // 增加点击量
-    incPV: function incPV (_id) {
-        return new Promise(() => {
-            Post.updateOne({_id}, {$inc: {pv: 1}})
-        })
+    incPV: function (id) {
+        return Post.updateOne({_id: id}, {$inc: {pv: 1}}).exec()
     },
     // 通过文章id获取一篇原生文章（编辑文章）
     getRawPostById: function (postId) {
@@ -69,7 +67,8 @@ module.exports = {
     // 通过id更新一篇文章
     updatePostById: function (postId, data) {
         return new Promise((resolve, reject) => {
-            Post.updateOne({_id: postId}, {$set: data}).exec((err, doc) => {
+            // {new: true} 表示返回的是改后的doc
+            Post.findOneAndUpdate({_id: postId}, {$set: data}, {new: true}).populate('author').exec((err, doc) => {
                 if (err) {
                     console.log(err)
                     reject(err)
@@ -82,7 +81,7 @@ module.exports = {
     // 通过id删除一篇文章
     deletePostById: function (postId) {
         return new Promise((resolve, reject) =>{
-            Post.deleteOne({_id: postId}).exec((err, doc) => {
+            Post.findOneAndRemove({_id: postId}).populate('author').exec((err, doc) => {
                 if (err) {
                     console.log(err)
                     reject(err)
