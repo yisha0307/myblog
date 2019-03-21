@@ -3,6 +3,7 @@ const router = express.Router()
 
 const checkLogin = require('../middlewares/check').checkLogin
 const PostModel = require('../models/post')
+const CommentModel = require('../models/comment')
 
 // GET /posts 所有用户或者特定用户的文章页
 // eg: /posts?author=xxx
@@ -54,17 +55,14 @@ router.post('/create', checkLogin, (req, res, next) => {
 // GET /posts/:postId 单独一篇文章页
 router.get('/:postId', function (req, res, next) {
     const postId = req.params.postId
-    PostModel.findPostById(postId)
-        .then(post => {
+    Promise.all([PostModel.findPostById(postId), PostModel.incPV(postId)])
+        .then(([post, re]) => {
             if (!post) {
                 throw new Error('该文章不存在')
-            } else {
-                res.render('post', {post})
-                // 非promise
-                PostModel.incPV(postId)
             }
+            res.render('post', {post})
         })
-        .catch(e=> {
+        .catch(e => {
             req.flash('error', e.message)
             return res.redirect('back')
         })
@@ -127,6 +125,7 @@ router.get('/:postId/remove', checkLogin, function (req, res, next) {
         if (author !== post.author._id.toString()) {
             throw new Error('没有权限')
         }
+        CommentModel.deleteCommentsByPostId(postId)
         req.flash('success', '删除文章成功')
         res.redirect('/posts')
     }).catch(next)
