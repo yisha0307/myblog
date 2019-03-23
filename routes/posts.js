@@ -12,7 +12,13 @@ router.get('/', (req, res, next) => {
 
     PostModel.findPosts(author)
     .then(docs => {
-        res.render('posts', {posts: docs})
+        Promise.all(docs.map(doc => CommentModel.getCommentsCount(doc._id)))
+            .then(results => {
+                for (let i =0; i < docs.length; i++) {
+                    docs[i].commentsCount = results[i]
+                }
+                res.render('posts', {posts: docs})
+            })
     })
     .catch(next)
 })
@@ -55,12 +61,16 @@ router.post('/create', checkLogin, (req, res, next) => {
 // GET /posts/:postId 单独一篇文章页
 router.get('/:postId', function (req, res, next) {
     const postId = req.params.postId
-    Promise.all([PostModel.findPostById(postId), PostModel.incPV(postId)])
-        .then(([post, re]) => {
+    Promise.all([
+        PostModel.findPostById(postId), 
+        CommentModel.getComments(postId),
+        PostModel.incPV(postId)])
+        .then(([post, comments, re]) => {
             if (!post) {
                 throw new Error('该文章不存在')
             }
-            res.render('post', {post})
+            post.commentsCount = comments.length || 0
+            res.render('post', {post, comments})
         })
         .catch(e => {
             req.flash('error', e.message)
@@ -116,7 +126,7 @@ router.post('/:postId/edit', checkLogin, function (req, res, next){
 // GET /posts/:postId/remove 删除一篇文章
 router.get('/:postId/remove', checkLogin, function (req, res, next) {
     const postId = req.params.postId
-    const author = req.session.author._id
+    const author = req.session.user._id
 
     PostModel.deletePostById(postId).then(post =>{
         if (!post) {

@@ -1,8 +1,8 @@
-const Comment = require('../lib/mongodb').Comment
+const { Comment } = require('../lib/mongodb')
 
 module.exports = {
     // 发表留言
-    creatComment: function (comment) {
+    createComment: function (comment) {
         return new Promise((resolve, reject) => {
             let comment_entity = new Comment(comment)
             comment_entity.save((err, doc) => {
@@ -23,7 +23,16 @@ module.exports = {
     },
     // 删除留言
     deleteCommentById: function (_id) {
-        return Comment.deleteOne({_id}).exec()
+        return new Promise((resolve, reject) => {
+            Comment.findOneAndRemove({_id}).exec((err, doc) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve(doc)
+                }
+            })
+        })
     },
     // 更新留言
     updateComment: function (commentId) {
@@ -35,16 +44,10 @@ module.exports = {
     },
     // 通过文章id获取所有的评论
     getComments: function (postId) {
-        return Comment.find({postId}).exec()
+        return Comment.find({postId}).populate('author').exec()
     },
     // 获取某一篇文章下的评论数
     getCommentsCount: function (postId) {
-        return Comment.count({postId}).exec((err, count) => {
-            if (err) {
-                console.log(err)
-            } else {
-                return count
-            }
-        })
+        return Comment.count({postId})
     }
 }
