@@ -6,7 +6,9 @@ const flash = require('connect-flash')
 const config = require('config-lite')(__dirname)
 const routes = require('./routes')
 const pkg = require('./package')
-
+// 利用winston和express-winston记录日志
+const winston = require('winston')
+const expressWinston = require('express-winston')
 const app = express()
 
 
@@ -56,8 +58,33 @@ app.use(function (req, res, next) {
     res.locals.error = req.flash('error').toString()
     next()
 })
+// 记录正常请求日志的中间件要放在routes(app)之前，记录错误日志的要放在routes(app)之后
+// 正常请求的日志
+app.use(expressWinston.logger({
+    transports: [
+        new (winston.transports.Console)({
+            json: true,
+            colorize: true
+        }),
+        new winston.transports.File({
+            filename: 'logs/success.log'
+        })
+    ]
+}))
 // 路由
 routes(app);
+// 错误请求的日志
+app.use(expressWinston.errorLogger({
+    transports: [
+        new winston.transports.Console({
+            json: true,
+            colorize: true
+        }),
+        new winston.transports.File({
+            filename: 'logs/error.log'
+        })
+    ]
+}))
 // 监听端口，启动程序
 app.listen(config.port, function () {
     console.log(`${pkg.name} listening on port ${config.port}`)
