@@ -85,8 +85,14 @@ app.use(expressWinston.errorLogger({
         })
     ]
 }))
-// 监听端口，启动程序
-app.listen(config.port, function () {
-    console.log(`${pkg.name} listening on port ${config.port}`)
-})
 
+// 直接启动index.js 会监听端口启动程序，如果index.js被require了，则导出app，通常用来测试
+if (module.parent) {
+    // 被require, 则导出app
+    module.exports = app
+} else {
+    // 监听端口，启动程序
+    app.listen(config.port, function () {
+        console.log(`${pkg.name} listening on port ${config.port}`)
+    })
+}
