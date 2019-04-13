@@ -12,7 +12,6 @@ const expressWinston = require('express-winston')
 const app = express()
 
 
-
 // 设置模板目录
 app.set('views', path.join(__dirname, 'views'))
 // 设置模板引擎为ejs
@@ -22,6 +21,7 @@ app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'public')))
 
 // session中间件
+// 在req中添加session对象
 app.use(session({
     name: config.session.key, // 设置cookie中保存session id的字段名称
     secret: config.session.secret, // 通过设置secret 来计算hash值并放在cookie中，使产生的signedCookie防篡改
