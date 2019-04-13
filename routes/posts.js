@@ -2,11 +2,23 @@ const express = require('express')
 const router = express.Router()
 
 const checkLogin = require('../middlewares/check').checkLogin
-const PostModel = require('../models/post')
+const Post = require('../lib/mongodb').Post
 const CommentModel = require('../models/comment')
 
 // GET /posts 所有用户或者特定用户的文章页
 // eg: /posts?author=xxx
+router.get('/all', async (req, res, next) => {
+    let ret = {
+        "success": true,
+        "code": 200,
+        "message": "",
+        "data": []
+    }
+    const data = await Post.find()
+    ret.data = data
+    res.send(ret)
+})
+
 router.get('/', (req, res, next) => {
     const author = req.query.author
 

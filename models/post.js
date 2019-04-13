@@ -18,6 +18,11 @@ module.exports = {
             })
         })
     },
+    findAllPosts: function () {
+        return new Promise ((resolve, reject) => {
+            Post.find()
+        })
+    },
     findPostById: function (_id) {
         return new Promise ((resolve, reject) => {
             Post.findOne({_id: _id}).populate('author').exec((err, doc) => {

@@ -13,9 +13,9 @@ const app = express()
 
 
 // 设置模板目录
-app.set('views', path.join(__dirname, 'views'))
+// app.set('views', path.join(__dirname, 'views'))
 // 设置模板引擎为ejs
-app.set('view engine', 'ejs')
+// app.set('view engine', 'ejs')
 
 // 设置静态文件目录 (要放在router(app)之前)
 app.use(express.static(path.join(__dirname, 'public')))
