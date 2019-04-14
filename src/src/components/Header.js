@@ -1,16 +1,20 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
+import NavSetting from '../components/navSetting'
 
 export default ()  => {
-    return <section className='nav'>
-        <div className = 'ui grid'>
-            <div className='four wide column'></div>
-            <div className='right wide column'>
-                <Link to='/'>
-                    <h1>Esha's Blog</h1>
-                </Link>
-                <p>Welcome</p>
+    return <section>
+        <section className='nav'>
+            <div className = 'ui grid'>
+                <div className='four wide column'></div>
+                <div className='right wide column'>
+                    <Link to='/'>
+                        <h1>Esha's Blog</h1>
+                    </Link>
+                    <p>Welcome</p>
+                </div>
             </div>
-        </div>
+        </section>
+        <NavSetting />
     </section>
 }

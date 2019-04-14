@@ -21,7 +21,7 @@ export default class HomeIndex extends Component {
         const {posts} = this.state
         console.log(posts)
         return (
-            posts.map(p => <PostContent content={p}/>)
+            posts.map(p => <PostContent key={p._id} post={p}/>)
         )
     }
 }

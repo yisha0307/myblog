@@ -6,9 +6,6 @@ const routes = require('./routes/index')
 app.use(bodyParser.json())
 
 //注册路由
-
-// const all = require('./routes/all')
-
 routes(app)
 
 // routes(app)
