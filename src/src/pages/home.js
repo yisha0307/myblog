@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import postService from '../service/postService'
 import PostContent from '../components/postContent'
 
 import commonActions from '../actions/commonAction'
@@ -14,7 +13,6 @@ class HomeIndex extends Component {
     }
 
     render () {
-        console.log(this.props)
         return (
             this.props.posts.map(p => <PostContent key={p._id} post={p}/>)
         )
