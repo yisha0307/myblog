@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 export default class NavSetting extends Component {
     state = {}
     render () {
+        const {user = ''} = this.state
         return <section className='nav-setting'>
             <div className='ui buttons'>
                 <div className='ui floating dropdown button'>

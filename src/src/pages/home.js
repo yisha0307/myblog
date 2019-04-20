@@ -1,27 +1,30 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import postService from '../service/postService'
 import PostContent from '../components/postContent'
 
-export default class HomeIndex extends Component {
-    state = {
-        posts: []
-    }
+import commonActions from '../actions/commonAction'
+import postActions from '../actions/postActions'
+
+class HomeIndex extends Component {
     componentDidMount () {
-      this.getPostList()
+        this.props.getUserInfo()
+        this.props.getPostList()
     }
 
-    getPostList = async () => {
-        const posts = await postService.getAllPosts()
-        this.setState({
-            posts
-        })
-    }
     render () {
-        const {posts} = this.state
-        console.log(posts)
+        console.log(this.props)
         return (
-            posts.map(p => <PostContent key={p._id} post={p}/>)
+            this.props.posts.map(p => <PostContent key={p._id} post={p}/>)
         )
     }
 }
+
+const mapStatesToProps = states => ({...states.commonReducers, ...states.postReducers})
+const mapDispatchToProps = dispatch => ({
+    getUserInfo: () => dispatch(commonActions.getUserInfo()),
+    getPostList: () => dispatch(postActions.getPostList())
+})
+
+export default connect(mapStatesToProps, mapDispatchToProps)(HomeIndex)
