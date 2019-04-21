@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import Header from './components/Header'
 import NavSetting from './components/navSetting'
 import Home from './pages/home'
+import LogIn from './pages/login'
 
 export default () => {
     return (<Router>     
@@ -12,6 +13,7 @@ export default () => {
                 <NavSetting />
                 <Switch>
                     <Route exact path='/' component={Home}></Route>
+                    <Route exact path = '/login' component = {LogIn}></Route>
                 </Switch>
             </section>
     </Router>)

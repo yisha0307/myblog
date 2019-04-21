@@ -1,8 +1,8 @@
 import ajax from '../tools/ajax'
-import {GET_USER_INFO} from './constants'
+import {GET_USER_INFO, LOGIN, LOGIN_SUCCESS, LOGIN_FAIL} from './constants'
 
 // actions
-function getUserInfo() {
+export function getUserInfo() {
     return dispatch => {
         ajax.get('/user/initData').then(res => {
             dispatch({
@@ -13,6 +13,12 @@ function getUserInfo() {
     }
 }
 
-export default {
-    getUserInfo
+export function login () {
+    return dispatch => {
+        ajax.post('/signin', {}).then(res => {
+            dispatch({
+                type: LOGIN_SUCCESS
+            })
+        })
+    }
 }

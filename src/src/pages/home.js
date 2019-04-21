@@ -3,10 +3,11 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import PostContent from '../components/postContent'
 
-import commonActions from '../actions/commonAction'
-import postActions from '../actions/postActions'
+import * as commonActions from '../actions/commonAction'
+import * as postActions from '../actions/postActions'
 
 class HomeIndex extends Component {
+
     componentDidMount () {
         this.props.getUserInfo()
         this.props.getPostList()
@@ -20,9 +21,6 @@ class HomeIndex extends Component {
 }
 
 const mapStatesToProps = states => ({...states.commonReducers, ...states.postReducers})
-const mapDispatchToProps = dispatch => ({
-    getUserInfo: () => dispatch(commonActions.getUserInfo()),
-    getPostList: () => dispatch(postActions.getPostList())
-})
+const mapDispatchToProps = ({...commonActions, ...postActions})
 
 export default connect(mapStatesToProps, mapDispatchToProps)(HomeIndex)
