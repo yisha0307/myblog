@@ -1,5 +1,7 @@
 import axios from 'axios'
-import store from './store'
+import * as commonActions from '../actions/commonAction'
+// import {message} from 'antd'
+import store from '../store'
 
 axios.defaults.headers = {
   'X-Requested-With': 'XMLHttpRequest'
@@ -10,16 +12,16 @@ axios.defaults.headers = {
 
 // 定义一个请求拦截器，完成发请求时候的loading效果
 axios.interceptors.request.use(function (config) {
-//   store.state.isLoading = true
+  store.dispatch(commonActions.load(true))
   return config
 })
 // 定义一个响应拦截器
 axios.interceptors.response.use(function (config) {
-//   store.state.isLoading = false
+  store.dispatch(commonActions.load(false))
   return config
 }, err => {
-//   store.state.isLoading = false
-//   window.vm.$ui.toast.show(err.retMsg || '网络有误, 请稍后再试')
+  store.dispatch(commonActions.load(false))
+  // message.info(err.retMsg || '网络有误, 请稍后再试')
 })
 
 const joinQueries = (obj = {}) => {

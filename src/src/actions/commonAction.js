@@ -1,5 +1,5 @@
 import ajax from '../tools/ajax'
-import {GET_USER_INFO, LOGIN, LOGIN_SUCCESS, LOGIN_FAIL} from './constants'
+import {GET_USER_INFO, REFRESH_LOADING} from './constants'
 
 // actions
 export function getUserInfo() {
@@ -13,12 +13,21 @@ export function getUserInfo() {
     }
 }
 
-export function login () {
+// export function login () {
+//     return dispatch => {
+//         ajax.post('/signin', {}).then(res => {
+//             dispatch({
+//                 type: LOGIN_SUCCESS
+//             })
+//         })
+//     }
+// }
+
+export function load (bool) {
     return dispatch => {
-        ajax.post('/signin', {}).then(res => {
-            dispatch({
-                type: LOGIN_SUCCESS
-            })
+        dispatch({
+            type: REFRESH_LOADING,
+            isLoading: bool
         })
     }
 }
