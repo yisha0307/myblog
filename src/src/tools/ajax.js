@@ -1,6 +1,6 @@
 import axios from 'axios'
 import * as commonActions from '../actions/commonAction'
-// import {message} from 'antd'
+import {message} from 'antd'
 import store from '../store'
 
 axios.defaults.headers = {
@@ -21,7 +21,7 @@ axios.interceptors.response.use(function (config) {
   return config
 }, err => {
   store.dispatch(commonActions.load(false))
-  // message.info(err.retMsg || '网络有误, 请稍后再试')
+  message.info(err.retMsg || '网络有误, 请稍后再试')
 })
 
 const joinQueries = (obj = {}) => {

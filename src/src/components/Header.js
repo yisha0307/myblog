@@ -7,13 +7,13 @@ export default ()  => {
         <section className='nav'>
             <div className = 'ui grid'>
                 <div className='four wide column'></div>
-                <div className='right wide column'>
+                {/* <div className='right wide column'> */}
                     <Link to='/'>
                         <h1>Esha's Blog</h1>
                     </Link>
-                    <p>Welcome</p>
+                    {/* <p>Welcome</p> */}
                 </div>
-            </div>
+            {/* </div> */}
         </section>
         <NavSetting />
     </section>

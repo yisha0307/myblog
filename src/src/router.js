@@ -5,6 +5,9 @@ import Header from './components/Header'
 import NavSetting from './components/navSetting'
 import Home from './pages/home'
 import LogIn from './pages/login'
+import Signup from './pages/signup'
+import Create from './pages/create'
+import Edit from './pages/edit'
 
 export default () => {
     return (<Router>     
@@ -14,6 +17,9 @@ export default () => {
                 <Switch>
                     <Route exact path='/' component={Home}></Route>
                     <Route exact path = '/login' component = {LogIn}></Route>
+                    <Route exact path = '/signup' component = {Signup}></Route>
+                    <Route exact path = '/create' component = {Create}></Route>
+                    <Route exact path = '/edit' component = {Edit}></Route>
                 </Switch>
             </section>
     </Router>)
