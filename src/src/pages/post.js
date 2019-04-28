@@ -1,15 +1,24 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router-dom'
+import * as postActions from '../actions/postActions'
+import { connect } from 'react-redux';
 
-export default class PostContent extends Component {
+class PostDetail extends Component {
+    componentDidMount () {
+        const id = this.props.match.params.id
+        this.getPostDetail(id)
+    }
+    getPostDetail (id) {
+        this.props.getPostDetail(id)
+    }
     render () {
-        const {post} = this.props;
+        const {post = {}} = this.props;
+        console.log(this.props)
         return (
             <div className='post-content'>
                 <div className='ui grid'>
                     <div className='eight wide column'>
                         <div className='ui segment'>
-                        <Link to={`/post/${post._id}`}><h3>{post.title}</h3></Link>
+                        <h3>{post.title}</h3>
                         <pre>{post.content}</pre>
                         </div>
                         <div>
@@ -26,3 +35,8 @@ export default class PostContent extends Component {
         )
     }
 }
+
+const mapStateToProps = states => states.postReducers
+const mapDispatchToProps = postActions
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostDetail)

@@ -1,7 +1,8 @@
-import {GET_POST_LIST} from '../actions/constants'
+import {GET_POST_LIST, GET_POST_DETAIL} from '../actions/constants'
 
 const initialState = {
-    posts: []
+    posts: [],
+    post: {}
 }
 
 export default function (state = initialState, action) {
@@ -11,6 +12,12 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 posts: action.posts
+            }
+        }
+        case GET_POST_DETAIL: {
+            return {
+                ...state,
+                post: action.postDetail
             }
         }
         default:

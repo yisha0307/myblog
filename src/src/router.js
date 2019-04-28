@@ -8,6 +8,7 @@ import LogIn from './pages/login'
 import Signup from './pages/signup'
 import Create from './pages/create'
 import Edit from './pages/edit'
+import Post from './pages/post'
 
 export default () => {
     return (<Router>     
@@ -20,6 +21,7 @@ export default () => {
                     <Route exact path = '/signup' component = {Signup}></Route>
                     <Route exact path = '/create' component = {Create}></Route>
                     <Route exact path = '/edit' component = {Edit}></Route>
+                    <Route path='/post/:id' component= {Post}></Route>
                 </Switch>
             </section>
     </Router>)

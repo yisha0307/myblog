@@ -4,6 +4,7 @@ const router = express.Router()
 const checkLogin = require('../middlewares/check').checkLogin
 const Post = require('../lib/mongodb').Post
 const CommentModel = require('../models/comment')
+const PostModel = require('../models/post')
 
 // GET /posts 所有用户或者特定用户的文章页
 // eg: /posts?author=xxx
@@ -71,23 +72,39 @@ router.post('/create', checkLogin, (req, res, next) => {
     })
 })
 // GET /posts/:postId 单独一篇文章页
-router.get('/:postId', function (req, res, next) {
+router.get('/:postId', async (req, res, next) => {
+    let ret = {
+        "success": true,
+        "code": 200,
+        "message": "",
+        "data": {}
+    }
     const postId = req.params.postId
-    Promise.all([
-        PostModel.findPostById(postId), 
-        CommentModel.getComments(postId),
-        PostModel.incPV(postId)])
-        .then(([post, comments, re]) => {
-            if (!post) {
-                throw new Error('该文章不存在')
-            }
-            post.commentsCount = comments.length || 0
-            res.render('post', {post, comments})
-        })
-        .catch(e => {
-            req.flash('error', e.message)
-            return res.redirect('back')
-        })
+    const post = await Post.findOne({_id: postId})
+    if (!post) {
+        ret = {
+            "success": false,
+            "message": '该文章不存在'
+        }
+    } else {
+        ret.data = post
+    }
+    res.send(ret)
+    // Promise.all([
+    //     PostModel.findPostById(postId), 
+    //     CommentModel.getComments(postId),
+    //     PostModel.incPV(postId)])
+    //     .then(([post, comments, re]) => {
+    //         if (!post) {
+    //             throw new Error('该文章不存在')
+    //         }
+    //         post.commentsCount = comments.length || 0
+    //         res.render('post', {post, comments})
+    //     })
+    //     .catch(e => {
+    //         req.flash('error', e.message)
+    //         return res.redirect('back')
+    //     })
 })
 // GET /posts/:postId/edit 更新文章页
 router.get('/:postId/edit', function (req, res, next) {
