@@ -9,7 +9,7 @@ export default ()  => {
                 <div className='four wide column'></div>
                 {/* <div className='right wide column'> */}
                     <Link to='/'>
-                        <h1>Esha's Blog</h1>
+                        <h1>sss Blog</h1>
                     </Link>
                     {/* <p>Welcome</p> */}
                 </div>

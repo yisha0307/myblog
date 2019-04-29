@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import * as postActions from '../actions/postActions'
 import { connect } from 'react-redux';
+import _ from 'lodash'
 
 class PostDetail extends Component {
-    componentDidMount () {
+    componentWillMount () {
         const id = this.props.match.params.id
         this.getPostDetail(id)
     }
@@ -11,11 +12,18 @@ class PostDetail extends Component {
         this.props.getPostDetail(id)
     }
     render () {
-        const {post = {}} = this.props;
-        console.log(this.props)
+        const {post = {}} = this.props
+        const genderMap = {m:'男', f:'女', x: '保密'}
         return (
             <div className='post-content'>
                 <div className='ui grid'>
+                <div className='four wide column'>
+                    <a className='avatar avatar-link' href={`/posts?author=${_.get(post, 'author._id')}`}
+                        data-title = {`${_.get(post, 'author.name') } | ${genderMap[_.get(post, 'author.gender' )]}`}
+                        data-content = {`${_.get(post, 'author.bio')}`}>
+                        <img className='avatar' src={`/img/${_.get(post, 'author.avatar')}`} />
+                    </a>
+                </div>
                     <div className='eight wide column'>
                         <div className='ui segment'>
                         <h3>{post.title}</h3>
@@ -26,7 +34,6 @@ class PostDetail extends Component {
                             <span className='tag right'>
                                 <span>{`浏览(${post.pv || 0})`}</span>
                                 <span>{`留言(${post.commentsCount || 0})`}</span>
-
                             </span>
                         </div>
                     </div>

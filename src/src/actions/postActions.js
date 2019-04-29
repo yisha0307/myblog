@@ -17,6 +17,7 @@ export const getPostDetail = id => {
     return async dispatch => {
         const result = await ajax.get(`/post/${id}`)
         const post = _.get(result, 'data.data') || {}
+        console.log(post)
         dispatch({
             type: GET_POST_DETAIL,
             postDetail: post || {}

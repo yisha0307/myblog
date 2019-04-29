@@ -7,7 +7,6 @@ import * as commonActions from '../actions/commonAction'
 import * as postActions from '../actions/postActions'
 
 class HomeIndex extends Component {
-
     componentDidMount () {
         this.props.getUserInfo()
         this.props.getPostList()

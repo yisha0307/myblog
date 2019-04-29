@@ -15,7 +15,12 @@ router.get('/all', async (req, res, next) => {
         "message": "",
         "data": []
     }
-    const data = await Post.find()
+    const query = {}
+    const author = req.query.author
+    if (author) {
+        query.author = author
+    }
+    const data = await Post.find(query).sort({_id: -1}).populate('author')
     ret.data = data
     res.send(ret)
 })
@@ -80,7 +85,8 @@ router.get('/:postId', async (req, res, next) => {
         "data": {}
     }
     const postId = req.params.postId
-    const post = await Post.findOne({_id: postId})
+    const post = await Post.findOne({_id: postId}).populate('author')
+    await Post.updateOne({_id: postId}, {$inc: {pv: 1}})
     if (!post) {
         ret = {
             "success": false,

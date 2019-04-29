@@ -24,15 +24,15 @@ module.exports = {
         })
     },
     findPostById: function (_id) {
-        return new Promise ((resolve, reject) => {
-            Post.findOne({_id: _id}).populate('author').exec((err, doc) => {
-                if (err) {
-                    console.log(err)
-                    reject(err)
-                } else {
-                    resolve(doc)
-                }
-            })
+        return Post.findOne({_id: _id}).populate('author').exec((err, doc) => {
+            if (err) {
+                return ({
+                    error: 'true',
+                    message: err
+                })
+            } else {
+                return doc
+            }
         })
     },
     findPosts: function (author) {
@@ -53,7 +53,7 @@ module.exports = {
     },
     // 增加点击量
     incPV: function (id) {
-        return Post.updateOne({_id: id}, {$inc: {pv: 1}}).exec()
+        return Post.updateOne({_id: id}, {$inc: {pv: 1}})
     },
     // 通过文章id获取一篇原生文章（编辑文章）
     getRawPostById: function (postId) {
