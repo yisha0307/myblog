@@ -6,8 +6,8 @@ const Post = require('../lib/mongodb').Post
 const CommentModel = require('../models/comment')
 const PostModel = require('../models/post')
 
-// GET /posts 所有用户或者特定用户的文章页
-// eg: /posts?author=xxx
+// GET /post 所有用户或者特定用户的文章页
+// eg: /post?author=xxx
 router.get('/all', async (req, res, next) => {
     let ret = {
         "success": true,
@@ -25,55 +25,46 @@ router.get('/all', async (req, res, next) => {
     res.send(ret)
 })
 
-router.get('/', (req, res, next) => {
-    const author = req.query.author
-
-    PostModel.findPosts(author)
-    .then(docs => {
-        Promise.all(docs.map(doc => CommentModel.getCommentsCount(doc._id)))
-            .then(results => {
-                for (let i =0; i < docs.length; i++) {
-                    docs[i].commentsCount = results[i]
-                }
-                res.render('posts', {posts: docs})
-            })
-    })
-    .catch(next)
-})
-// 发表文章页
-router.get('/create', (req, res, next) => {
-    res.render('create')
-})
-// POST /posts/create 发表一篇文章
+// POST /post/create 发表一篇文章
 router.post('/create', checkLogin, (req, res, next) => {
-    const author = req.session.user._id
-    const title = req.fields.title
-    const content = req.fields.content
+    const title = req.body.title
+    const content = req.body.content
+    console.log(title, content)
+    let ret = {
+        "success": true,
+        "code": 200,
+        "message": "success",
+        "postId": ""
+    }
+    let errRet = {
+        "success": false,
+        "code": 200,
+        "errMsg": ""
+    }
     // 校验参数
     try {
         if (!title.length) {
-            throw new Error('请填写标题')
+            res.send({...errRet, "errMsg": '请填写标题'})
         }
         if (!content.length) {
-            throw new Error('请填写内容')
+            res.send({...errRet, "errMsg": '请填写内容'})
         }
     } catch (e) {
-        req.flash('error', e.message)
+        res.send({...errRet, "errMsg": '网络错误'})
         return res.redirect('back')
     }
 
-    let post = {
-        author,
-        title,
-        content
-    }
-    // 发表文章 promise
-    PostModel.add(post).then(doc => {
-        let post = doc
-        req.flash('success', '发表成功')
-        res.redirect(`/posts/${post._id}`)
-    }).catch(err => {
-        next(err)
+    let postEntity = new Post({title, content})
+    console.log(postEntity)
+    postEntity.save((err, doc) => {
+        if (err) {
+            res.send({...errRet, "errMsg": err})
+        } else {
+            ret.postId = doc._id
+            console.log(ret)
+            res.send(ret)
+            res.redirect(`/posts/${doc._id}`)
+        }
     })
 })
 // GET /posts/:postId 单独一篇文章页

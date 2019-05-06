@@ -9,6 +9,7 @@ import Signup from './pages/signup'
 import Create from './pages/create'
 import Edit from './pages/edit'
 import Post from './pages/post'
+import 'antd/dist/antd.css'
 
 export default () => {
     return (<Router>     

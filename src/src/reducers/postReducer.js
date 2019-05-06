@@ -2,7 +2,9 @@ import {GET_POST_LIST, GET_POST_DETAIL} from '../actions/constants'
 
 const initialState = {
     posts: [],
-    post: {}
+    post: {},
+    newTitle: '',
+    newContent: ''
 }
 
 export default function (state = initialState, action) {

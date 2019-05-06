@@ -17,10 +17,16 @@ export const getPostDetail = id => {
     return async dispatch => {
         const result = await ajax.get(`/post/${id}`)
         const post = _.get(result, 'data.data') || {}
-        console.log(post)
         dispatch({
             type: GET_POST_DETAIL,
             postDetail: post || {}
         })
+    }
+}
+
+export const createNewPost = ({title, content}) => {
+    return async dispatch => {
+        const result = await ajax.post(`/post/create`, {title, content})
+        console.log(result)
     }
 }

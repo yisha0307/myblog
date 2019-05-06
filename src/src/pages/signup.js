@@ -4,7 +4,15 @@ import * as commonActions from '../actions/commonAction'
 
 class SignupPage extends Component {
     state = {}
-
+    submit () {
+        const {name, password, repassword, gender, bio} = this.state
+        this.props.submit({
+            name,
+            password,
+            repassword,
+            gender,bio
+        })
+    }
     render () {
         return (
             <div className='ui grid'>
@@ -39,7 +47,7 @@ class SignupPage extends Component {
                             <label>个人简介</label>
                             <textarea name='bio' rows='5'></textarea>
                         </div>
-                        <input type='submit' className='ui button fluid' value='注册' />
+                        <input type='submit' className='ui button fluid' value='注册' onClick='submit'/>
                     </form>
                 </div>
             </div>
