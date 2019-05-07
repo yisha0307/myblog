@@ -8,10 +8,17 @@ module.exports = {
         next()
     },
     checkNotLogin: function checkNotLogin (req, res, next) {
+        console.log('------', req.session)
         if (req.session.user){
-            // 用户已登录的话禁止访问登录、注册页面
-            req.flash('error', '已登录')
-            return res.redirect('back') // 返回之前的页面
+            const ret = {
+                "success": true,
+                "code": 200,
+                "message": "已登录",
+                "data": {
+                    "errMsg": "已登录"
+                }
+            }
+            return res.send(ret)
         }
         next()
     }

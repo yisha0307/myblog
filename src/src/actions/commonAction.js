@@ -1,5 +1,6 @@
 import ajax from '../tools/ajax'
-import {GET_USER_INFO, REFRESH_LOADING} from './constants'
+import sha1 from 'sha1'
+import {GET_USER_INFO, REFRESH_LOADING, LOGIN_SUCCESS} from './constants'
 
 // actions
 export function getUserInfo() {
@@ -13,15 +14,16 @@ export function getUserInfo() {
     }
 }
 
-// export function login () {
-//     return dispatch => {
-//         ajax.post('/signin', {}).then(res => {
-//             dispatch({
-//                 type: LOGIN_SUCCESS
-//             })
-//         })
-//     }
-// }
+export function login ({name, password}) {
+    console.log('1', name, password)
+    return dispatch => {
+        ajax.post('/signin', {name, password: sha1(password)}).then(res => {
+            dispatch({
+                type: LOGIN_SUCCESS
+            })
+        })
+    }
+}
 
 export function load (bool) {
     return dispatch => {

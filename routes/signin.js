@@ -6,10 +6,9 @@ const UserModel = require('../models/user')
 const checkNotLogin = require('../middlewares/check').checkNotLogin
 
 // POST /signin 用户登录
-router.post('/', checkNotLogin, (req, res, next) => {
-    const name = req.fields.name
-    const password = req.fields.password
-
+router.post('/', (req, res, next) => {
+    const name = req.body.name
+    const password = req.body.password
     // 校验参数
     try {
         if (!name.length) {
@@ -19,28 +18,36 @@ router.post('/', checkNotLogin, (req, res, next) => {
             throw new Error('请填写密码')
         }
     } catch (e) {
-        req.flash('error', e.message)
-        return res.redirect('back')
+        const errRet = {
+            "code": 200,
+            "success": true,
+            "retCode": '999999',
+            "errMsg": e
+        }
+        res.send(errRet)
     }
     UserModel.findUserByName(name).then(user => {
+        console.log('-----------', user)
         if (!user) {
-            req.flash('error', '用户不存在')
-            return res.redirect('back')
+            // req.flash('error', '用户不存在')
+            // return res.redirect('back')
         }
         // 检查密码是否匹配
-        if (sha1(password) !== user.password) {
-            req.flash('error', '用户名或密码错误')
-            return res.redirect('back')
+        if (password !== user.password) {
+            // req.flash('error', '用户名或密码错误')
+            // return res.redirect('back')
         }
-        req.flash('success', '登录成功')
+        const ret = {
+            "success": true,
+            "code": 200,
+            "message": "",
+            "data": user
+        }
+        res.send(ret)
 
         // 用户信息写入session
         delete user.password
         req.session.user = user
-        // 跳转到主页
-        res.redirect('/posts')
-    }).catch(e=>{
-        next(e)
     })
 })
 

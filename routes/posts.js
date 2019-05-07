@@ -29,7 +29,6 @@ router.get('/all', async (req, res, next) => {
 router.post('/create', checkLogin, (req, res, next) => {
     const title = req.body.title
     const content = req.body.content
-    console.log(title, content)
     let ret = {
         "success": true,
         "code": 200,
@@ -53,12 +52,13 @@ router.post('/create', checkLogin, (req, res, next) => {
         res.send({...errRet, "errMsg": '网络错误'})
         return res.redirect('back')
     }
-
+    // todo 加author
     let postEntity = new Post({title, content})
-    console.log(postEntity)
     postEntity.save((err, doc) => {
         if (err) {
-            res.send({...errRet, "errMsg": err})
+            console.log('err---->', err)
+            errRet.errMsg = err
+            res.send(errRet)
         } else {
             ret.postId = doc._id
             console.log(ret)
