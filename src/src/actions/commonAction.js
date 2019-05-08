@@ -14,16 +14,13 @@ export function getUserInfo() {
     }
 }
 
-export function login ({name, password}) {
-    console.log('1', name, password)
-    return dispatch => {
-        ajax.post('/signin', {name, password: sha1(password)}).then(res => {
-            dispatch({
-                type: LOGIN_SUCCESS
-            })
-        })
-    }
-}
+// export function login ({name, password}) {
+//     return dispatch => {
+//         ajax.post('/signin', {name, password: sha1(password)}).then(res => {
+
+//         })
+//     }
+// }
 
 export function load (bool) {
     return dispatch => {
