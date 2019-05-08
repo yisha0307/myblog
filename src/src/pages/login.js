@@ -16,19 +16,19 @@ class LogInPage extends Component {
         this.setState({password: e.target.value})
     }
     login = ({name, password}) => {
-        const {history} = this.props
-        history.push('/')
         // const {history} = this.props
-        // ajax.get('/user/initData').then(res => {
-        //     history.push('/')
-        // })
+        // history.push('/')
+        const {history} = this.props
+        ajax.post('/signin', {name, password}).then(res => {
+            history.push('/')
+        })
     }
     render () {
         const {name, password} = this.state
         return <div className='ui grid'>
         <div className='four wide column'></div>
         <div className='eight wide column'>
-            <form className='ui form segment'>
+            <section className='ui form segment'>
                 <div className='field required'>
                     <label>用户名</label>
                     <input placeholder="用户名" type='text' name='name' value={name} onChange={this.changeName}/>
@@ -38,7 +38,7 @@ class LogInPage extends Component {
                     <input placeholder="密码" type='password' name='password' value={password} onChange={this.changePassword}/>
                 </div>
                 <input type='submit' className='ui button fluid' value='登录' onClick={() => this.login({name, password})}/>
-            </form>
+            </section>
         </div>
     </div>
     }
