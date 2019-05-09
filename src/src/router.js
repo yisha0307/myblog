@@ -15,7 +15,7 @@ export default () => {
     return (<Router>     
             <section>
                 <Header />
-                <NavSetting />
+                <NavSetting/>
                 <Switch>
                     <Route exact path='/' component={Home}></Route>
                     <Route exact path = '/login' component = {LogIn}></Route>

@@ -8,7 +8,7 @@ axios.defaults.headers = {
 }
 
 // 带cookie
-// axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true
 
 // 定义一个请求拦截器，完成发请求时候的loading效果
 axios.interceptors.request.use(function (config) {
@@ -30,13 +30,27 @@ const joinQueries = (obj = {}) => {
   return `?${queries}`
 }
 
+// 返回的直接是response.data
 const get = (url, params) => {
-  if (!params) {
-    return axios.get(url)
-  }
-  return axios.get(`${url}${joinQueries(params)}`)
+  const restrUrl = params ? `${url}${joinQueries(params)}` : url
+  return new Promise((resolve, reject) => {
+    axios.get(restrUrl).then(res => {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+const post = (url, params) => {
+  return new Promise((resolve, reject) => {
+    axios.post(url, params).then(res => {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
 }
 export default{
   get,
-  post: (url, params) => axios.post(url, params)
+  post
 }

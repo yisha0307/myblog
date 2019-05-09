@@ -1,5 +1,4 @@
 import ajax from '../tools/ajax'
-import sha1 from 'sha1'
 import {GET_USER_INFO, REFRESH_LOADING, LOGIN_SUCCESS} from './constants'
 
 // actions
@@ -8,7 +7,7 @@ export function getUserInfo() {
         ajax.get('/user/initData').then(res => {
             dispatch({
                 type: GET_USER_INFO,
-                userInfo: res.data.session || {}
+                userInfo: res.session || {}
             })
         })
     }

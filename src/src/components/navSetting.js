@@ -1,7 +1,23 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import { connect } from 'react-redux';
+import styled from 'styled-components'
+import ajax from '../tools/ajax'
+import { message } from 'antd';
+import { withRouter } from 'react-router-dom'
 
+const NavMenu = styled.div`
+    padding: 10px 5px !important;
+    .div-item{
+        color: #1890ff;
+        display: block;
+        padding: 5px;
+    }
+    .div-item:hover {
+        cursor: pointer;
+        border-bottom: 3px solid #4fc08d;
+    }
+`;
 class NavSetting extends Component {
     state = {
         showMenu: false
@@ -9,6 +25,16 @@ class NavSetting extends Component {
     showMenu = ()  => {
         this.setState({
             showMenu: !this.state.showMenu
+        })
+    }
+    logout = () => {
+        const {history} = this.props
+        ajax.get('/signout').then(res => {
+            if (res.retCode === '000000') {
+                history.push('/login')
+            } else {
+                message.error('登出失败')
+            }
         })
     }
     render () {
@@ -19,18 +45,17 @@ class NavSetting extends Component {
             <div className='ui buttons'>
                 <div className='ui floating dropdown button' onClick = {this.showMenu}>
                     <i className='icon bars'></i>
-                    <div className='menu'>
+                    {showMenu && <NavMenu className='menu'>
                         {!!user && showMenu && <div>
-                            <Link className='item' to=''>个人主页</Link>
-                            <div className='divider'></div>
-                            <Link className='item' to = '/post/create'>发表文章</Link>
-                            <Link className='item' to='/signout'>登出</Link>
+                            <div className='div-item' to=''>个人主页</div>
+                            <div className='div-item' to = '/post/create'>发表文章</div>
+                            <div className='div-item' onClick={this.logout}>登出</div>
                         </div>}
                         {!user && showMenu && <div>
-                            <Link className='item' to='/signin'>登录</Link>
-                            <Link className='item' to='/signup'>注册</Link>
+                            <Link className='div-item' to='/login'>登录</Link>
+                            <div className='div-item' to='/signup'>注册</div>
                         </div>}
-                    </div>
+                    </NavMenu>}
                 </div>
             </div>
         </section>
@@ -38,4 +63,4 @@ class NavSetting extends Component {
 }
 
 const mapStatesToProps = states => ({...states.commonReducers})
-export default connect(mapStatesToProps)(NavSetting)
+export default withRouter(connect(mapStatesToProps)(NavSetting))

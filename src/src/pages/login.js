@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import * as commonActions from '../actions/commonAction'
 import ajax from '../tools/ajax'
 import sha1 from 'sha1'
+import { message } from 'antd';
 
 class LogInPage extends Component {
     state = {
@@ -16,11 +17,14 @@ class LogInPage extends Component {
         this.setState({password: e.target.value})
     }
     login = ({name, password}) => {
-        // const {history} = this.props
-        // history.push('/')
         const {history} = this.props
-        ajax.post('/signin', {name, password}).then(res => {
-            history.push('/')
+        ajax.post('/signin', {name, password: sha1(password)}).then(res => {
+            console.log(res)
+            if (res.retCode === '000000') {
+                history.push('/')
+            } else {
+                message.error(res.retMsg || '登录失败')
+            }
         })
     }
     render () {

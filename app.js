@@ -5,13 +5,14 @@ const config = require('config-lite')(__dirname)
 var app = express();
 var bodyParser = require('body-parser')
 const routes = require('./routes/index')
+const cookieParser = require('cookie-parser')
 
+app.use(cookieParser())
 app.use(bodyParser.json())
-
 // session中间件
 // 在req中添加session对象
 app.use(session({
-  name: config.session.key, // 设置cookie中保存session id的字段名称
+    name: config.session.key, // 设置cookie中保存session id的字段名称
     secret: config.session.secret, // 通过设置secret 来计算hash值并放在cookie中，使产生的signedCookie防篡改
     resave: true, // 强制更新session
     saveUninitialized: false, // 设置为false, 强制创建一个session, 即使用户未登录
@@ -22,6 +23,7 @@ app.use(session({
         url: config.mongodb // 将session 储存到mongodb
     })
 }))
+
 //注册路由
 routes(app)
 

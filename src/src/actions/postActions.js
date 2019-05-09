@@ -5,7 +5,7 @@ import _ from 'lodash'
 export const getPostList = () => {
     return async dispatch => {
         const result = await ajax.get('/post/all')
-        const posts = _.get(result, 'data.data') || []
+        const posts = _.get(result, 'data') || []
         dispatch({
             type: GET_POST_LIST,
             posts
@@ -16,7 +16,7 @@ export const getPostList = () => {
 export const getPostDetail = id => {
     return async dispatch => {
         const result = await ajax.get(`/post/${id}`)
-        const post = _.get(result, 'data.data') || {}
+        const post = _.get(result, 'data') || {}
         dispatch({
             type: GET_POST_DETAIL,
             postDetail: post || {}
