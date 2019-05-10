@@ -2,9 +2,9 @@ import ajax from '../tools/ajax'
 import {GET_POST_LIST, GET_POST_DETAIL} from './constants'
 import _ from 'lodash'
 
-export const getPostList = () => {
+export const getPostList = authorId => {
     return async dispatch => {
-        const result = await ajax.get('/post/all')
+        const result = await ajax.get('/post/all', {author: authorId})
         const posts = _.get(result, 'data') || []
         dispatch({
             type: GET_POST_LIST,

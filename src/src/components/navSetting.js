@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import ajax from '../tools/ajax'
 import { message } from 'antd';
 import { withRouter } from 'react-router-dom'
+import * as commonActions from '../actions/commonAction'
 
 const NavMenu = styled.div`
     padding: 10px 5px !important;
@@ -28,14 +29,19 @@ class NavSetting extends Component {
         })
     }
     logout = () => {
-        const {history} = this.props
+        const {history, clearUserInfo} = this.props
         ajax.get('/signout').then(res => {
             if (res.retCode === '000000') {
+                clearUserInfo()
                 history.push('/login')
             } else {
                 message.error('登出失败')
             }
         })
+    }
+    toHomePage = () => {
+        const {history, userInfo = {}} = this.props
+        history.push('posts?author=' + userInfo._id)
     }
     render () {
         const {showMenu} = this.state
@@ -47,8 +53,8 @@ class NavSetting extends Component {
                     <i className='icon bars'></i>
                     {showMenu && <NavMenu className='menu'>
                         {!!user && showMenu && <div>
-                            <div className='div-item' to=''>个人主页</div>
-                            <div className='div-item' to = '/post/create'>发表文章</div>
+                            <Link className='div-item' to={'/posts?author=' + userInfo._id}>个人主页</Link>
+                            <Link className='div-item' to = '/post/create'>发表文章</Link>
                             <div className='div-item' onClick={this.logout}>登出</div>
                         </div>}
                         {!user && showMenu && <div>
@@ -63,4 +69,4 @@ class NavSetting extends Component {
 }
 
 const mapStatesToProps = states => ({...states.commonReducers})
-export default withRouter(connect(mapStatesToProps)(NavSetting))
+export default withRouter(connect(mapStatesToProps, commonActions)(NavSetting))

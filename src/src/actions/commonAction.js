@@ -1,5 +1,5 @@
 import ajax from '../tools/ajax'
-import {GET_USER_INFO, REFRESH_LOADING, LOGIN_SUCCESS} from './constants'
+import {GET_USER_INFO, REFRESH_LOADING, LOGIN_SUCCESS, CLEAR_USERINFO} from './constants'
 
 // actions
 export function getUserInfo() {
@@ -26,6 +26,14 @@ export function load (bool) {
         dispatch({
             type: REFRESH_LOADING,
             isLoading: bool
+        })
+    }
+}
+
+export function clearUserInfo () {
+    return dispatch => {
+        dispatch({
+            type: CLEAR_USERINFO
         })
     }
 }

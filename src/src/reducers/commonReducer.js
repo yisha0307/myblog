@@ -1,4 +1,4 @@
-import {GET_USER_INFO, REFRESH_LOADING} from '../actions/constants'
+import {GET_USER_INFO, REFRESH_LOADING, CLEAR_USERINFO} from '../actions/constants'
 const initialState = {
     userInfo: {},
     isLoading: false
@@ -16,6 +16,12 @@ export default function (state=initialState, action) {
             return {
                 ...state,
                 userInfo: action.userInfo
+            }
+        }
+        case CLEAR_USERINFO: {
+            return {
+                ...state,
+                userInfo: {}
             }
         }
         default:
