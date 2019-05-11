@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import * as postActions from '../actions/postActions'
 import { connect } from 'react-redux';
 import _ from 'lodash'
+import Comments from '../components/comments'
 
 class PostDetail extends Component {
     componentWillMount () {
@@ -38,6 +39,7 @@ class PostDetail extends Component {
                         </div>
                     </div>
                 </div>
+                <Comments post = {post} />
             </div>
         )
     }
