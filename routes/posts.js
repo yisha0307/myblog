@@ -77,6 +77,7 @@ router.get('/:postId', async (req, res, next) => {
     }
     const postId = req.params.postId
     const post = await Post.findOne({_id: postId}).populate('author')
+    const comments = await CommentModel.getComments(postId)
     await Post.updateOne({_id: postId}, {$inc: {pv: 1}})
     if (!post) {
         ret = {
@@ -84,7 +85,10 @@ router.get('/:postId', async (req, res, next) => {
             "message": '该文章不存在'
         }
     } else {
-        ret.data = post
+        ret.data = {
+            post,
+            comments
+        }
     }
     res.send(ret)
     // Promise.all([

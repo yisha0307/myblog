@@ -3,40 +3,46 @@ const router = express.Router()
 const checkLogin = require('../middlewares/check').checkLogin
 const CommentModel = require('../models/comment')
 // POST /comments 创建一条留言
-router.post('/', checkLogin, (req, res, next) => {
-    const { postId, content } = req.fields
+router.post('/create', (req, res, next) => {
+    const {comment, postId} = req.body
     const author = req.session.user._id
-    console.log(postId, content, author)
     try {
-        if (!content.length) {
+        if (!comment.length) {
             throw new Error('请填写留言内容')
         }
     } catch (e) {
-        req.flash('error', e.message)
-        return res.redirect('back')
+        return e
     }
-    
-    CommentModel.createComment({author, postId, content})
+    CommentModel.createComment({author, postId, content: comment})
         .then(doc => {
-            req.flash('success', '创建留言成功')
-            res.redirect('back')
+            const ret = {
+                success: 'true',
+                retCode: '000000'
+            }
+            res.send(ret)
         })
         .catch(next)
 })
 
 // GET /comments/:commentId/remove 删除一条留言
-router.get('/:commentId/remove', checkLogin, (req, res, next) => {
+router.get('/remove/:commentId', (req, res, next) => {
     const commentId = req.params.commentId
     const author = req.session.user._id
+    const ret = {
+        retMsg: '',
+        retCode: ''
+    }
     CommentModel.deleteCommentById(commentId).then(doc => {
         if (!doc) {
-            throw new Error('留言不存在')
+            ret.retCode = '999999'
+            ret.retMsg = '留言不存在'
         }
         if (doc.author._id.toString() !== author.toString()) {
-            throw new Error('没有权限删除留言')
+            ret.retCode = '999999'
+            ret.retMsg = '没有权限删除留言'
         }
-        req.flash('success', '删除留言成功')
-        res.redirect('back')
+        ret.retCode = '000000'
+        res.send(ret)
     })
     .catch(next)
 })

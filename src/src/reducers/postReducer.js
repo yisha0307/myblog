@@ -1,8 +1,10 @@
 import {GET_POST_LIST, GET_POST_DETAIL} from '../actions/constants'
+import { bindActionCreators } from 'redux';
 
 const initialState = {
     posts: [],
     post: {},
+    comments: [],
     newTitle: '',
     newContent: ''
 }
@@ -19,7 +21,8 @@ export default function (state = initialState, action) {
         case GET_POST_DETAIL: {
             return {
                 ...state,
-                post: action.postDetail
+                post: action.postDetail,
+                comments: action.comments
             }
         }
         default:

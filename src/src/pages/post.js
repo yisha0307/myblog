@@ -13,7 +13,7 @@ class PostDetail extends Component {
         this.props.getPostDetail(id)
     }
     render () {
-        const {post = {}} = this.props
+        const {post = {}, comments = []} = this.props
         const genderMap = {m:'男', f:'女', x: '保密'}
         return (
             <div className='post-content'>
@@ -39,7 +39,7 @@ class PostDetail extends Component {
                         </div>
                     </div>
                 </div>
-                <Comments post = {post} />
+                <Comments post = {post} comments = {comments}/>
             </div>
         )
     }

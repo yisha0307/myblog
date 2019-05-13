@@ -48,7 +48,6 @@ router.post('/', (req, res, next) => {
         // 用户信息写入session
         delete user.password
         req.session.user = user
-        console.log(req.session)
 
         const ret = {
             "success": true,

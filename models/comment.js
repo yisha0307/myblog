@@ -2,9 +2,9 @@ const { Comment } = require('../lib/mongodb')
 
 module.exports = {
     // 发表留言
-    createComment: function (comment) {
+    createComment: function (content) {
         return new Promise((resolve, reject) => {
-            let comment_entity = new Comment(comment)
+            let comment_entity = new Comment(content)
             comment_entity.save((err, doc) => {
                 if (err) {
                     console.log('error ----->', err)
