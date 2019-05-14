@@ -1,5 +1,6 @@
 var express = require('express');
 const session = require('express-session')
+const path = require('path')
 const MongoStore = require('connect-mongo')(session)
 const config = require('config-lite')(__dirname)
 var app = express();
@@ -9,6 +10,8 @@ const cookieParser = require('cookie-parser')
 
 app.use(cookieParser())
 app.use(bodyParser.json())
+// 设置静态文件目录 (要放在router(app)之前)
+app.use(express.static(path.join(__dirname, 'public')))
 // session中间件
 // 在req中添加session对象
 app.use(session({

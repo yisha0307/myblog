@@ -35,7 +35,11 @@ const get = (url, params) => {
   const restrUrl = params ? `${url}${joinQueries(params)}` : url
   return new Promise((resolve, reject) => {
     axios.get(restrUrl).then(res => {
-      resolve(res.data)
+      if (res.data) {
+        resolve(res.data)
+      } else {
+        message.info('get请求失败')
+      }
     }).catch(err => {
       reject(err)
     })
@@ -44,7 +48,11 @@ const get = (url, params) => {
 const post = (url, params) => {
   return new Promise((resolve, reject) => {
     axios.post(url, params).then(res => {
-      resolve(res.data)
+      if (res.data) {
+        resolve(res.data)
+      } else {
+        message.info('post请求失败')
+      }
     }).catch(err => {
       reject(err)
     })

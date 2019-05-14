@@ -1,11 +1,17 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
+import * as postActions from '../actions/postActions'
 import _ from 'lodash'
 
 export default class PostContent extends Component {
+    updatePost () {
+        const {updatePost} = this.props
+        updatePost().then()
+    }
     render () {
-        const {post = {}} = this.props
+        const {post = {}, user, deletePost} = this.props
         const genderMap = {m:'男', f:'女', x: '保密'}
+        const showMenu = user && post.author._id && user._id.toString()=== post.author._id.toString()
         return (
             <div className='post-content'>
                 <div className='ui grid'>
@@ -26,7 +32,14 @@ export default class PostContent extends Component {
                             <span className='tag right'>
                                 <span>{`浏览(${post.pv || 0})`}</span>
                                 <span>{`留言(${post.commentsCount || 0})`}</span>
-
+                                   {showMenu &&  <div class='ui inline dropdown'>
+                                        <div class='text'></div>
+                                        <i class='dropdown icon'></i>
+                                        <div class='menu'>
+                                            <div class='item' onClick={() => this.updatePost()}>编辑</div>
+                                            <div class='item' onClick={deletePost}>删除</div>
+                                        </div>
+                                    </div>}
                             </span>
                         </div>
                     </div>

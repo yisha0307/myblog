@@ -29,8 +29,22 @@ export const getPostDetail = id => {
 export const createNewPost = ({title, content}) => {
     return async dispatch => {
         const result = await ajax.post(`/post/create`, {title, content})
-        console.log(result)
+        return new Promise((resolve, reject) => {
+            if (result.retCode === '000000') {
+                resolve(result)
+            } else {
+                reject(result)
+            }
+        })
     }
+}
+
+export const updatePost = (postId) => {
+
+}
+
+export const deletePost = (postId) => {
+    
 }
 
 export const createComment = ({comment, postId}) => {

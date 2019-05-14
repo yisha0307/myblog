@@ -26,34 +26,31 @@ router.get('/all', async (req, res, next) => {
 })
 
 // POST /post/create 发表一篇文章
-router.post('/create', checkLogin, (req, res, next) => {
+router.post('/create', (req, res, next) => {
     const title = req.body.title
     const content = req.body.content
+    const author = req.session.user._id
     let ret = {
-        "success": true,
-        "code": 200,
-        "message": "success",
+        "retCode": '000000',
         "postId": ""
     }
     let errRet = {
-        "success": false,
-        "code": 200,
-        "errMsg": ""
+        "retCode": '999999',
+        "retMsg": ""
     }
     // 校验参数
     try {
         if (!title.length) {
-            res.send({...errRet, "errMsg": '请填写标题'})
+            res.send({...errRet, "retMsg": '请填写标题'})
         }
         if (!content.length) {
-            res.send({...errRet, "errMsg": '请填写内容'})
+            res.send({...errRet, "retMsg": '请填写内容'})
         }
     } catch (e) {
-        res.send({...errRet, "errMsg": '网络错误'})
-        return res.redirect('back')
+        res.send({...errRet, "retMsg": '网络错误'})
     }
     // todo 加author
-    let postEntity = new Post({title, content})
+    let postEntity = new Post({title, content, author})
     postEntity.save((err, doc) => {
         if (err) {
             console.log('err---->', err)
@@ -63,7 +60,6 @@ router.post('/create', checkLogin, (req, res, next) => {
             ret.postId = doc._id
             console.log(ret)
             res.send(ret)
-            res.redirect(`/posts/${doc._id}`)
         }
     })
 })
@@ -76,9 +72,10 @@ router.get('/:postId', async (req, res, next) => {
         "data": {}
     }
     const postId = req.params.postId
-    const post = await Post.findOne({_id: postId}).populate('author')
+    let post = await PostModel.findPostById(postId)
     const comments = await CommentModel.getComments(postId)
-    await Post.updateOne({_id: postId}, {$inc: {pv: 1}})
+    await PostModel.incPV(postId)
+    post.commentsCount = comments.length || 0
     if (!post) {
         ret = {
             "success": false,
@@ -91,21 +88,6 @@ router.get('/:postId', async (req, res, next) => {
         }
     }
     res.send(ret)
-    // Promise.all([
-    //     PostModel.findPostById(postId), 
-    //     CommentModel.getComments(postId),
-    //     PostModel.incPV(postId)])
-    //     .then(([post, comments, re]) => {
-    //         if (!post) {
-    //             throw new Error('该文章不存在')
-    //         }
-    //         post.commentsCount = comments.length || 0
-    //         res.render('post', {post, comments})
-    //     })
-    //     .catch(e => {
-    //         req.flash('error', e.message)
-    //         return res.redirect('back')
-    //     })
 })
 // GET /posts/:postId/edit 更新文章页
 router.get('/:postId/edit', function (req, res, next) {
@@ -153,21 +135,29 @@ router.post('/:postId/edit', checkLogin, function (req, res, next){
         res.redirect(`/posts/${postId}`)
     }).catch(next)
 })
-// GET /posts/:postId/remove 删除一篇文章
-router.get('/:postId/remove', checkLogin, function (req, res, next) {
+// GET /post/remove/:postId 删除一篇文章
+router.get('/remove/:postId', function (req, res, next) {
     const postId = req.params.postId
     const author = req.session.user._id
-
+    
     PostModel.deletePostById(postId).then(post =>{
         if (!post) {
-            throw new Error('文章不存在')
+            res.send({
+                "retCode": '999999',
+                "retMsg": '没有找到该文章'
+            })
         }
         if (author !== post.author._id.toString()) {
-            throw new Error('没有权限')
+            res.send({
+                "retCode": '999999',
+                "retMsg": '没有权限'
+            })
         }
         CommentModel.deleteCommentsByPostId(postId)
-        req.flash('success', '删除文章成功')
-        res.redirect('/posts')
+        const ret = {
+            'retCode': '000000'
+        }
+        res.send(ret)
     }).catch(next)
 })
 

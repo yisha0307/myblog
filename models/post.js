@@ -24,16 +24,7 @@ module.exports = {
         })
     },
     findPostById: function (_id) {
-        return Post.findOne({_id: _id}).populate('author').exec((err, doc) => {
-            if (err) {
-                return ({
-                    error: 'true',
-                    message: err
-                })
-            } else {
-                return doc
-            }
-        })
+        return Post.findOne({_id: _id}).populate('author')
     },
     findPosts: function (author) {
         return new Promise ((resolve, reject) => {

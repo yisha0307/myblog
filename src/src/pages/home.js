@@ -5,6 +5,7 @@ import PostContent from '../components/postContent'
 import {searchToQuery} from '../utils'
 import * as commonActions from '../actions/commonAction'
 import * as postActions from '../actions/postActions'
+import { userInfo } from 'os';
 
 class HomeIndex extends Component {
     componentDidMount () {
@@ -15,8 +16,9 @@ class HomeIndex extends Component {
     }
 
     render () {
+        const {userInfo = {}} = this.props
         return (
-            this.props.posts.map(p => <PostContent key={p._id} post={p}/>)
+            this.props.posts.map(p => <PostContent key={p._id} post={p} user={userInfo}/>)
         )
     }
 }

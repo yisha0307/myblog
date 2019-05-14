@@ -34,7 +34,7 @@ class PostDetail extends Component {
                             <span className='tag'>{post.created_at}</span>
                             <span className='tag right'>
                                 <span>{`浏览(${post.pv || 0})`}</span>
-                                <span>{`留言(${post.commentsCount || 0})`}</span>
+                                <span>{`留言(${comments.length || 0})`}</span>
                             </span>
                         </div>
                     </div>

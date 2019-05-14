@@ -54,7 +54,7 @@ class NavSetting extends Component {
                     {showMenu && <NavMenu className='menu'>
                         {!!user && showMenu && <div>
                             <Link className='div-item' to={'/posts?author=' + userInfo._id}>个人主页</Link>
-                            <Link className='div-item' to = '/post/create'>发表文章</Link>
+                            <Link className='div-item' to = '/create'>发表文章</Link>
                             <div className='div-item' onClick={this.logout}>登出</div>
                         </div>}
                         {!user && showMenu && <div>

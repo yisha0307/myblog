@@ -10,17 +10,29 @@ class Comments extends Component {
     }
     createComment () {
         const {comment} = this.state
-        const {post = {}} = this.props
+        if (!comment) {
+            message.error('留言内容不能为空')
+            return
+        }
+        const {post = {}, getPostDetail} = this.props
         const postId = post._id
         const {createComment} = this.props
-        createComment({comment, postId}).then(res => message.success('留言成功'))
+        createComment({comment, postId}).then(res => {
+            message.success('留言成功')
+            getPostDetail(postId)
+            this.setState({comment: ''})
+        })
     }
     changeComment (e) {
         this.setState({comment: e.target.value})
     }
     deleteComment (id) {
-        const {deleteComment} = this.props
-        deleteComment(id).then(res => message.success('删除留言成功'))
+        const {deleteComment, getPostDetail, post = {}} = this.props
+        const postId = post._id
+        deleteComment(id).then(res => {
+            message.success('删除留言成功')
+            getPostDetail(postId)
+        })
     }
     render () {
         const {comments = [], userInfo = {}, post} = this.props
@@ -37,7 +49,7 @@ class Comments extends Component {
                     {comments.map(comment => (
                         <div className="comment">
                         <span className="avatar">
-                            <img src="" />
+                            <img src={`/img/${comment.author.avatar}`} />
                         </span>
                         <div className="content">
                             <a className="author" href={`/posts?author=${userId}`}>{comment.author.name}</a>
