@@ -16,9 +16,9 @@ class HomeIndex extends Component {
     }
 
     render () {
-        const {userInfo = {}} = this.props
+        const {userInfo = {}, history} = this.props
         return (
-            this.props.posts.map(p => <PostContent key={p._id} post={p} user={userInfo}/>)
+            this.props.posts.map(p => <PostContent key={p._id} post={p} user={userInfo} history={history}/>)
         )
     }
 }

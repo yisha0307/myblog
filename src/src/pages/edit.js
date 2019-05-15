@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { connect } from 'mongoose';
 
 class EditPage extends Component {
     render () {
@@ -27,4 +28,5 @@ class EditPage extends Component {
     }
 }
 
-export default EditPage
+const mapStateToProps = states => states.commonReducers
+export default connect(mapStateToProps)(EditPage)

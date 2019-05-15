@@ -1,6 +1,7 @@
 import ajax from '../tools/ajax'
 import {GET_POST_LIST, GET_POST_DETAIL} from './constants'
 import _ from 'lodash'
+import { message } from 'antd';
 
 export const getPostList = authorId => {
     return async dispatch => {
@@ -44,7 +45,15 @@ export const updatePost = (postId) => {
 }
 
 export const deletePost = (postId) => {
-    
+    return async dispatch => {
+        const result = await ajax.get(`/post/remove/${postId}`)
+        if (result.retCode === '000000') {
+            message.success('删除文章成功')
+            getPostList()
+        } else {
+            message.error(result.retMsg || '删除文章失败')
+        }
+    }
 }
 
 export const createComment = ({comment, postId}) => {
