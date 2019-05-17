@@ -1,5 +1,5 @@
 import ajax from '../tools/ajax'
-import {GET_POST_LIST, GET_POST_DETAIL} from './constants'
+import {GET_POST_LIST, GET_POST_DETAIL, RENDER_RAW_POST} from './constants'
 import _ from 'lodash'
 import { message } from 'antd';
 
@@ -40,8 +40,35 @@ export const createNewPost = ({title, content}) => {
     }
 }
 
-export const updatePost = (postId) => {
+export const updatePost = ({postId, title, content}) => {
+    return async dispatch => {
+        const result = await ajax.post(`/post/update/${postId}`, {title, content})
+        return new Promise((resolve, reject) => {
+            if (result.retCode === '000000') {
+                resolve()
+            } else {
+                message.error(result.retMsg)
+            }
+        })
+    }  
+}
 
+export const getRawPost = postId => {
+    return async dispatch => {
+        const result = await ajax.get(`/post/raw/${postId}`)
+        return new Promise((resolve, reject) => {
+            if (result.retCode === '000000') {
+                dispatch({
+                    type: RENDER_RAW_POST,
+                    rawPost: result.data
+                })
+                resolve(result.data)
+            } else {
+                message.error('不存在该文章')
+                reject(result)
+            }
+        })
+    }
 }
 
 export const deletePost = (postId) => {

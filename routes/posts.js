@@ -89,6 +89,33 @@ router.get('/:postId', async (req, res, next) => {
     }
     res.send(ret)
 })
+// GET /post/raw/:postId 更新文章页
+router.get('/raw/:postId', function (req, res, next) {
+    const postId = req.params.postId
+    const author = req.session.user._id
+
+    PostModel.getRawPostById(postId).then(post => {
+        if (!post) {
+            const ret = {
+                retCode: '999999',
+                retMsg: '该文章不存在'
+            }
+            res.send(ret)
+        } else if (author.toString() !== post.author._id.toString()) {
+            const ret = {
+                retCode: '999999',
+                retMsg: '权限不足'
+            }
+            res.send(ret)
+        } else {
+            const ret = {
+                retCode: '000000',
+                data: post
+            }
+            res.send(ret)
+        }
+    })
+})
 // GET /posts/:postId/edit 更新文章页
 router.get('/:postId/edit', function (req, res, next) {
     const postId = req.params.postId
@@ -105,11 +132,11 @@ router.get('/:postId/edit', function (req, res, next) {
     })
     .catch(e=>next(e))
 })
-// POST 更新一篇文章
-router.post('/:postId/edit', checkLogin, function (req, res, next){
+
+router.post('/update/:postId', function (req, res, next) {
     const postId = req.params.postId
-    const title = req.fields.title
-    const content = req.fields.content
+    const title = req.body.title
+    const content = req.body.content
     const author = req.session.user._id
 
     try {
@@ -120,21 +147,37 @@ router.post('/:postId/edit', checkLogin, function (req, res, next){
             throw new Error('请填写内容')
         }
     } catch (e) {
-        req.flash('error', e.message)
-        return res.redirect('back')
+        const ret = {
+            retCode: '999999',
+            retMsg: e.message || '更新失败'
+        }
+        return res.send(ret)
     }
 
     PostModel.updatePostById(postId, {title, content}).then(post => {
-        if (!post) {
-            throw new Error('文章不存在')
+        try {
+            if (!post) {
+                throw new Error('文章不存在')
+            }
+            if (post.author._id.toString() !== author.toString()) {
+                throw new Error('没有权限')
+            }
+        } catch (e) {
+            const ret = { 
+                retCode: '999999',
+                retMsg: e.message || '更新失败'
+            }  
+            return res.send(ret)
         }
-        if (post.author._id.toString() !== author.toString()) {
-            throw new Error('没有权限')
+        const ret = {
+            retCode: '000000',
+            retMsg: '更新成功',
+            data: post._id
         }
-        req.flash('success', '编辑文章成功')
-        res.redirect(`/posts/${postId}`)
-    }).catch(next)
+        return res.send(ret)
+    })
 })
+
 // GET /post/remove/:postId 删除一篇文章
 router.get('/remove/:postId', function (req, res, next) {
     const postId = req.params.postId

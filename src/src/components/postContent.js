@@ -37,7 +37,7 @@ class PostContent extends Component {
                                         <div className='text'></div>
                                         <i className='dropdown icon'></i>
                                         <div className='menu'>
-                                            <div className='item' onClick={() => history.push('/edit')}>编辑</div>
+                                            <div className='item' onClick={() => history.push(`/edit/${post._id}`)}>编辑</div>
                                             <div className='item' onClick={() => deletePost(post._id)}>删除</div>
                                         </div>
                                     </div>}

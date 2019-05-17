@@ -21,7 +21,7 @@ export default () => {
                     <Route exact path = '/login' component = {LogIn}></Route>
                     <Route exact path = '/signup' component = {Signup}></Route>
                     <Route exact path = '/create' component = {Create}></Route>
-                    <Route exact path = '/edit' component = {Edit}></Route>
+                    <Route exact path = '/edit/:id' component = {Edit}></Route>
                     <Route path='/post/:id' component= {Post}></Route>
                     <Route path='/404' component={ErrPage}></Route>
                     <Route component={ErrPage}></Route>
