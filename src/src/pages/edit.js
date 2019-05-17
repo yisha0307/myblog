@@ -35,13 +35,13 @@ class EditPage extends Component {
         })
     }
     render () {
-        const {userInfo = {}} = this.props
+        const {userInfo = {}, history} = this.props
         const {title = '', content =''} = this.state
         return (
             <div className='ui grid'>
                 <div className='four wide column'>
                     <a className='avatar'>
-                        <img className='avatar' src={`/img/${userInfo.avatar}`} />
+                        <img className='avatar' src={`/img/${userInfo.avatar}`} onClick={() => history.push(`/posts?author=${userInfo._id}`)}/>
                     </a>
                 </div>
                 <div className='eight wide column'>

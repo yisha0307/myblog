@@ -35,7 +35,7 @@ class Comments extends Component {
         })
     }
     render () {
-        const {comments = [], userInfo = {}, post} = this.props
+        const {comments = [], userInfo = {}, post, history} = this.props
         const {comment = ''} = this.state
         const userId = userInfo._id
         return (
@@ -47,9 +47,9 @@ class Comments extends Component {
                     <h3 className="ui dividing header">留言</h3>
             
                     {comments.map(comment => (
-                        <div className="comment">
+                        <div className="comment" key={comment._id}>
                         <span className="avatar">
-                            <img src={`/img/${comment.author.avatar}`} />
+                            <img src={`/img/${comment.author.avatar}`} onClick={() => history.push(`/post?author=${userInfo._id}`)}/>
                         </span>
                         <div className="content">
                             <a className="author" href={`/posts?author=${userId}`}>{comment.author.name}</a>
@@ -66,7 +66,7 @@ class Comments extends Component {
                     ))}
                    
                     {userId && <section className="ui reply form" method="post" action="/comments">
-                        <input name="postId" value={post._id} hidden />
+                        {/* <input name="postId" value={post._id} hidden /> */}
                         <div className="field">
                             <textarea name="content" value={comment} onChange={this.changeComment.bind(this)}></textarea>
                         </div>

@@ -6,12 +6,11 @@ const Post = require('../lib/mongodb').Post
 const CommentModel = require('../models/comment')
 const PostModel = require('../models/post')
 
-// GET /post 所有用户或者特定用户的文章页
+// GET /post/all 所有用户或者特定用户的文章页
 // eg: /post?author=xxx
 router.get('/all', async (req, res, next) => {
     let ret = {
-        "success": true,
-        "code": 200,
+        "retCode": "000000",
         "message": "",
         "data": []
     }
@@ -20,9 +19,19 @@ router.get('/all', async (req, res, next) => {
     if (author) {
         query.author = author
     }
-    const data = await Post.find(query).sort({_id: -1}).populate('author')
-    ret.data = data
-    res.send(ret)
+    let posts = await Post.find(query).sort({_id: -1}).populate('author')
+    Promise.all(posts.map(post => CommentModel.getCommentsCount(post._id))).then(result => {
+        ret.data = posts.map((p, i) => ({
+            author: p.author,
+            content: p.content,
+            title: p.title,
+            _v: p._v,
+            _id: p._id,
+            pv: p.pv,
+            commentsCount: result[i]
+        }))
+        res.send(ret)
+    })
 })
 
 // POST /post/create 发表一篇文章
@@ -34,31 +43,26 @@ router.post('/create', (req, res, next) => {
         "retCode": '000000',
         "postId": ""
     }
-    let errRet = {
-        "retCode": '999999',
-        "retMsg": ""
-    }
+
     // 校验参数
     try {
         if (!title.length) {
-            res.send({...errRet, "retMsg": '请填写标题'})
+            throw new Error('请填写标题')
         }
         if (!content.length) {
-            res.send({...errRet, "retMsg": '请填写内容'})
+            throw new Error('请填写内容')
         }
     } catch (e) {
-        res.send({...errRet, "retMsg": '网络错误'})
+        res.send({"retCode": "999999", "retMsg": e.message || '网络错误'})
     }
     // todo 加author
     let postEntity = new Post({title, content, author})
     postEntity.save((err, doc) => {
         if (err) {
-            console.log('err---->', err)
             errRet.errMsg = err
-            res.send(errRet)
+            res.send({"retCode": "999999", "retMsg": err.message || '网络错误'})
         } else {
             ret.postId = doc._id
-            console.log(ret)
             res.send(ret)
         }
     })
@@ -66,9 +70,8 @@ router.post('/create', (req, res, next) => {
 // GET /posts/:postId 单独一篇文章页
 router.get('/:postId', async (req, res, next) => {
     let ret = {
-        "success": true,
-        "code": 200,
-        "message": "",
+        "retCode": "000000",
+        "retMsg": "",
         "data": {}
     }
     const postId = req.params.postId
@@ -78,8 +81,8 @@ router.get('/:postId', async (req, res, next) => {
     post.commentsCount = comments.length || 0
     if (!post) {
         ret = {
-            "success": false,
-            "message": '该文章不存在'
+            "retCode": '999999',
+            "retMsg": '该文章不存在'
         }
     } else {
         ret.data = {

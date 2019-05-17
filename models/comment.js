@@ -48,6 +48,6 @@ module.exports = {
     },
     // 获取某一篇文章下的评论数
     getCommentsCount: function (postId) {
-        return Comment.count({postId})
+        return Comment.countDocuments({postId})
     }
 }

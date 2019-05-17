@@ -3,16 +3,17 @@ import {Link} from 'react-router-dom'
 import * as postActions from '../actions/postActions'
 import _ from 'lodash'
 import { connect } from 'react-redux'
+import styled from 'styled-components'
 
 class PostContent extends Component {
-    updatePost () {
-        const {updatePost} = this.props
-        updatePost().then()
+    state = {
+        showEditMenu: false
     }
     render () {
-        const {post = {}, user, deletePost, history} = this.props
+        const {post = {}, user= {}, deletePost, history} = this.props
+        const {showEditMenu = false} = this.state
         const genderMap = {m:'男', f:'女', x: '保密'}
-        const showMenu = user && post.author._id && user._id.toString()=== post.author._id.toString()
+        const showMenu = user._id && post.author._id && user._id.toString()=== post.author._id.toString()
         return (
             <div className='post-content'>
                 <div className='ui grid'>
@@ -34,12 +35,11 @@ class PostContent extends Component {
                                 <span>{`浏览(${post.pv || 0})`}</span>
                                 <span>{`留言(${post.commentsCount || 0})`}</span>
                                    {showMenu &&  <div className='ui inline dropdown'>
-                                        <div className='text'></div>
-                                        <i className='dropdown icon'></i>
-                                        <div className='menu'>
+                                        <i className='dropdown icon' onClick={() => this.setState({showEditMenu: !showEditMenu})}></i>
+                                        {showEditMenu && <div className='menu'>
                                             <div className='item' onClick={() => history.push(`/edit/${post._id}`)}>编辑</div>
                                             <div className='item' onClick={() => deletePost(post._id)}>删除</div>
-                                        </div>
+                                        </div>}
                                     </div>}
                             </span>
                         </div>
