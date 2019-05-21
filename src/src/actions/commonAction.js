@@ -1,6 +1,7 @@
 import ajax from '../tools/ajax'
 import {GET_USER_INFO, REFRESH_LOADING, LOGIN_SUCCESS, CLEAR_USERINFO} from './constants'
-
+import sha1 from 'sha1'
+import { message, Avatar } from 'antd';
 // actions
 export function getUserInfo() {
     return dispatch => {
@@ -35,5 +36,19 @@ export function clearUserInfo () {
         dispatch({
             type: CLEAR_USERINFO
         })
+    }
+}
+
+export function signup ({name, password, repassword, avatar, gender, bio}) {
+    console.log(name, password, repassword, avatar,bio, gender)
+    const encryptedPwd = sha1(password)
+    const encryptedRePwd = sha1(repassword)
+    if (encryptedPwd !== encryptedRePwd) {
+        message.info("密码两次输入不匹配，请重新输入")
+        return
+    }
+    return async dispatch => {
+        const result = await ajax.post('/user/signup', {name, password: encryptedPwd, avatar, gender, bio})
+        console.log(result)
     }
 }

@@ -59,7 +59,7 @@ class NavSetting extends Component {
                         </div>}
                         {!user && showMenu && <div>
                             <Link className='div-item' to='/login'>登录</Link>
-                            <div className='div-item' to='/signup'>注册</div>
+                            <Link className='div-item' to='/signup'>注册</Link>
                         </div>}
                     </NavMenu>}
                 </div>
