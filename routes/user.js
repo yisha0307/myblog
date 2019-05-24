@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const UserModel = require('../models/user')
 const fs = require('fs')
+const path = require('path')
 
 router.get('/initData', (req, res, next) => {
     console.log(req.session)
@@ -14,7 +15,9 @@ router.get('/initData', (req, res, next) => {
 })
 
 router.post('/signup', (req, res, next) => {
-    const {name, password, bio, avatar, gender} = req.body
+    let {name, password, bio, avatar, gender} = req.body
+    avatar = avatar.path.split(path.sep).pop()
+    console.log(avatar)
     let user = {
         name,
         password,
