@@ -14,6 +14,15 @@ router.get('/initData', (req, res, next) => {
     res.send(ret)
 })
 
+router.post('/uploadImg', (req, res, next) => {
+    console.log(req.files.file.path)
+    let img = req.files.file.path.split(path.sep).pop()
+    res.send({
+        retCode: '000000',
+        imgUrl: img
+    })
+})
+
 router.post('/signup', (req, res, next) => {
     let {name, password, bio, avatar, gender} = req.body
     avatar = avatar.path.split(path.sep).pop()

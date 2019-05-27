@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import * as commonActions from '../actions/commonAction'
-import {message} from 'antd'
+import {Upload, message, Button, Icon} from 'antd'
 
 class SignupPage extends Component {
     state = {
@@ -12,6 +12,17 @@ class SignupPage extends Component {
         avatar: '',
         bio: ''
     }
+    beforeUpload (file) {
+        const isJPG = file.type === 'image/jpeg';
+        if (!isJPG) {
+            message.error('You can only upload JPG file!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must smaller than 2MB!');
+        }
+        return isJPG && isLt2M;
+    } 
     submit () {
         const {name, password, repassword, gender, avatar, bio} = this.state
         let errMessage = ''
@@ -40,6 +51,24 @@ class SignupPage extends Component {
     }
     render () {
         const {name, password, repassword, bio, avatar, gender} = this.state
+        const imgprops = {
+            name: 'file',
+            action: '/user/uploadImg',
+            headers: {
+              authorization: 'authorization-text',
+            },
+            accept: 'image/*',
+            onChange(info) {
+              if (info.file.status !== 'uploading') {
+                console.log(info.file, info.fileList);
+              }
+              if (info.file.status === 'done') {
+                message.success(`${info.file.name} file uploaded successfully`);
+              } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+              }
+            },
+          };
         return (
             <div className='ui grid'>
                 <div className='four wide column'></div>
@@ -66,12 +95,16 @@ class SignupPage extends Component {
                             </select>
                         </div>
                         <div className='field required'>
-                            <label>头像</label>
-                            <input type='file' name='avatar' value={avatar} onChange = {e=>this.setState({avatar: e.target.value})}/>
+                        <label>用户头像</label>
+                            <Upload {...imgprops}>
+                                <Button>
+                                <Icon type="upload" /> Upload
+                                </Button>
+                            </Upload>
                         </div>
                         <div className='field required'>
                             <label>个人简介</label>
-                            <textarea name='bio' rows='5' value={bio} onChange = { e => this.setState({bio: e.target.value})}></textarea>
+                            <textarea name='bio' rows='5' value={bio} onChange = { e => this.setState(e.target.value) }></textarea>
                         </div>
                         <button className='ui button fluid' onClick={this.submit.bind(this)}>注册</button>
                     </section>
