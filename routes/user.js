@@ -15,7 +15,7 @@ router.get('/initData', (req, res, next) => {
 })
 
 router.post('/uploadImg', (req, res, next) => {
-    console.log(req.files.file.path)
+    // console.log(req.files.file.path)
     let img = req.files.file.path.split(path.sep).pop()
     res.send({
         retCode: '000000',
@@ -24,9 +24,9 @@ router.post('/uploadImg', (req, res, next) => {
 })
 
 router.post('/signup', (req, res, next) => {
+    console.log('1111111')
     let {name, password, bio, avatar, gender} = req.body
-    avatar = avatar.path.split(path.sep).pop()
-    console.log(avatar)
+    console.log('--------', req.body)
     let user = {
         name,
         password,
@@ -34,19 +34,21 @@ router.post('/signup', (req, res, next) => {
         bio,
         avatar
     }
+    console.log('--------', user)
     // 用户信息写入数据库
     UserModel.add(user).then(doc => {
+        console.log(doc)
         let uuser = doc
         // 删除密码这种敏感信息，将用户信息存入 session
         delete uuser.password
-        req.session.user = user
+        req.session.user = doc
         let ret = {
             "retCode": "000000",
             "userId" : doc._id
         }
         res.send(ret)
     }).catch(e => {
-        fs.unlinkSync(req.files.avatar.path)
+        console.log(e)
         let ret = {
             "retCode": "999999",
             "retMsg": "用户名被占用"

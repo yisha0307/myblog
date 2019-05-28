@@ -12,17 +12,6 @@ class SignupPage extends Component {
         avatar: '',
         bio: ''
     }
-    beforeUpload (file) {
-        const isJPG = file.type === 'image/jpeg';
-        if (!isJPG) {
-            message.error('You can only upload JPG file!');
-        }
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-            message.error('Image must smaller than 2MB!');
-        }
-        return isJPG && isLt2M;
-    } 
     submit () {
         const {name, password, repassword, gender, avatar, bio} = this.state
         let errMessage = ''
@@ -49,6 +38,15 @@ class SignupPage extends Component {
             bio
         })
     }
+    onImgChange(info) {
+        console.log(info)
+        if (info.file.status === 'done') {
+            message.success(`${info.file.name} 上传成功`);
+            this.setState({avatar: info.file.response.imgUrl})
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} 上传失败.`);
+        }
+    }
     render () {
         const {name, password, repassword, bio, avatar, gender} = this.state
         const imgprops = {
@@ -57,18 +55,8 @@ class SignupPage extends Component {
             headers: {
               authorization: 'authorization-text',
             },
-            accept: 'image/*',
-            onChange(info) {
-              if (info.file.status !== 'uploading') {
-                console.log(info.file, info.fileList);
-              }
-              if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
-              } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-              }
-            },
-          };
+            accept: 'image/*'     
+        }
         return (
             <div className='ui grid'>
                 <div className='four wide column'></div>
@@ -96,7 +84,7 @@ class SignupPage extends Component {
                         </div>
                         <div className='field required'>
                         <label>用户头像</label>
-                            <Upload {...imgprops}>
+                            <Upload {...imgprops} onChange={this.onImgChange.bind(this)}>
                                 <Button>
                                 <Icon type="upload" /> Upload
                                 </Button>
