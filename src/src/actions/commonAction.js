@@ -2,6 +2,8 @@ import ajax from '../tools/ajax'
 import {GET_USER_INFO, REFRESH_LOADING, LOGIN_SUCCESS, CLEAR_USERINFO} from './constants'
 import sha1 from 'sha1'
 import { message, Avatar } from 'antd';
+import { resolve } from 'path';
+import { rejects } from 'assert';
 // actions
 export function getUserInfo() {
     return dispatch => {
@@ -48,6 +50,12 @@ export function signup ({name, password, repassword, avatar, gender, bio}) {
             return
         }
         const result = await ajax.post('/user/signup', {name, password: encryptedPwd, avatar, gender, bio})
-        console.log(result)
+        return new Promise((resolve, reject) => {
+            if (result.retCode === '000000') {
+                resolve(result)
+            } else {
+                reject(result)
+            }
+        })
     }
 }

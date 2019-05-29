@@ -9,7 +9,7 @@ router.get('/initData', (req, res, next) => {
     let ret = {
         "success": true,
         "code": 200,
-        "session": req.session.user || {}
+       "session": req.session.user || {}
     }
     res.send(ret)
 })
@@ -24,9 +24,7 @@ router.post('/uploadImg', (req, res, next) => {
 })
 
 router.post('/signup', (req, res, next) => {
-    console.log('1111111')
-    let {name, password, bio, avatar, gender} = req.body
-    console.log('--------', req.body)
+    let {name, password, bio, avatar, gender} = req.fields
     let user = {
         name,
         password,

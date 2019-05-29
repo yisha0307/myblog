@@ -10,10 +10,12 @@ class SignupPage extends Component {
         repassword: '',
         gender: 'x',
         avatar: '',
-        bio: ''
+        bio: '',
+        fileList: []
     }
     submit () {
         const {name, password, repassword, gender, avatar, bio} = this.state
+        const {history} = this.props
         let errMessage = ''
         if (!name) {
             errMessage = '请输入姓名'
@@ -25,6 +27,8 @@ class SignupPage extends Component {
             errMessage = '请选择性别'
         } else if (!avatar) {
             errMessage = '请上传头像'
+        } else if (!bio) {
+            errMessage = '请输入简介'
         }
         if (!!errMessage) {
             return message.info(errMessage)
@@ -36,10 +40,24 @@ class SignupPage extends Component {
             avatar,
             gender,
             bio
+        }).then(result => {
+            message.success('注册成功！')
+            history.push('/')
+        }).catch(e => {
+            message.error(e.retMsg || '网络错误，请稍后再试')
         })
     }
     onImgChange(info) {
-        console.log(info)
+        let fileList = [...info.fileList]
+        fileList = fileList.splice(-1)
+        fileList = fileList.map(file => {
+            if (file.response) {
+              file.url = file.response.url;
+            }
+            return file;
+          });
+      
+        this.setState({fileList})
         if (info.file.status === 'done') {
             message.success(`${info.file.name} 上传成功`);
             this.setState({avatar: info.file.response.imgUrl})
@@ -84,7 +102,7 @@ class SignupPage extends Component {
                         </div>
                         <div className='field required'>
                         <label>用户头像</label>
-                            <Upload {...imgprops} onChange={this.onImgChange.bind(this)}>
+                            <Upload {...imgprops} onChange={this.onImgChange.bind(this)} fileList={this.state.fileList}>
                                 <Button>
                                 <Icon type="upload" /> Upload
                                 </Button>
@@ -92,7 +110,7 @@ class SignupPage extends Component {
                         </div>
                         <div className='field required'>
                             <label>个人简介</label>
-                            <textarea name='bio' rows='5' value={bio} onChange = { e => this.setState(e.target.value) }></textarea>
+                            <textarea name='bio' rows='5' value={bio} onChange = { e => this.setState({bio: e.target.value}) }></textarea>
                         </div>
                         <button className='ui button fluid' onClick={this.submit.bind(this)}>注册</button>
                     </section>

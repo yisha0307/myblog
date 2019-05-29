@@ -9,7 +9,12 @@ const routes = require('./routes/index')
 const cookieParser = require('cookie-parser')
 
 app.use(cookieParser())
-app.use(bodyParser.json())
+// 处理表单及文件上传的中间件
+app.use(require('express-formidable')({
+    uploadDir: path.join(__dirname, 'public/img'), //上传文件目录
+    keepExtensions: true
+}))
+// app.use(bodyParser.json())
 // 设置静态文件目录 (要放在router(app)之前)
 app.use(express.static(path.join(__dirname, 'public')))
 // session中间件
@@ -26,11 +31,8 @@ app.use(session({
         url: config.mongodb // 将session 储存到mongodb
     })
 }))
-// 处理表单及文件上传的中间件
-app.use(require('express-formidable')({
-    uploadDir: path.join(__dirname, 'public/img'), //上传文件目录
-    keepExtensions: true
-}))
+routes(app)
+
 //注册路由
 routes(app)
 

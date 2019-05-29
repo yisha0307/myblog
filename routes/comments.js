@@ -4,7 +4,7 @@ const checkLogin = require('../middlewares/check').checkLogin
 const CommentModel = require('../models/comment')
 // POST /comments 创建一条留言
 router.post('/create', (req, res, next) => {
-    const {comment, postId} = req.body
+    const {comment, postId} = req.fields
     const author = req.session.user._id
     try {
         if (!comment.length) {

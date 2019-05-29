@@ -36,8 +36,8 @@ router.get('/all', async (req, res, next) => {
 
 // POST /post/create 发表一篇文章
 router.post('/create', (req, res, next) => {
-    const title = req.body.title
-    const content = req.body.content
+    const title = req.fields.title
+    const content = req.fields.content
     const author = req.session.user._id
     let ret = {
         "retCode": '000000',
@@ -138,8 +138,8 @@ router.get('/:postId/edit', function (req, res, next) {
 
 router.post('/update/:postId', function (req, res, next) {
     const postId = req.params.postId
-    const title = req.body.title
-    const content = req.body.content
+    const title = req.fields.title
+    const content = req.fields.content
     const author = req.session.user._id
 
     try {

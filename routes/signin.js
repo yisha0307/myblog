@@ -6,8 +6,7 @@ const checkNotLogin = require('../middlewares/check').checkNotLogin
 
 // POST /signin 用户登录
 router.post('/', (req, res, next) => {
-    const name = req.body.name
-    const password = req.body.password
+    const {name, password} = req.fields
     // 校验参数
     try {
         if (!name.length) {
